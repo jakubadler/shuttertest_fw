@@ -41,7 +41,7 @@ int main(void)
 
 		SET_LED(dd.measuring);
 		display_update(&dd);
-		_delay_ms(50);
+		_delay_ms(1);
 
 	}
 

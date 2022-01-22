@@ -15,6 +15,7 @@
 #define SET_INACTIVE(x) (counter_active &= ~_BV(x))
 
 #define SENSOR_DISTANCE 16 // [mm]
+#define COUNTER_FREQ_DIV 1024
 
 enum counter
 {
@@ -38,26 +39,31 @@ static volatile int32_t end_timer_close_value = 0;
 
 void get_measurements(struct display_data *data)
 {
+	int32_t begin_time, center_time, end_time;
+	bool update = false;
+
 	ATOMIC_BLOCK(ATOMIC_FORCEON) {
 		data->measuring = measuring;
 
 		if (!measuring) { // Only update data when measuring is done.
-			float begin_time, center_time, end_time;
+			update = true;
 
 			begin_time = main_timer_value;
-			center_time = begin_time - (float) center_timer_open_value + (float) center_timer_close_value;
-			end_time = begin_time - (float) end_timer_open_value + (float) end_timer_close_value;
-
-			data->time1 = (1024.0f * begin_time) / F_CPU;
-			data->time2 = (1024.0f * center_time) / F_CPU;
-			data->time3 = (1024.0f * end_time) / F_CPU;
-
-			data->center_speed1 = (SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * center_timer_open_value) / F_CPU);
-			data->end_speed1 = (2 * SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * end_timer_open_value) / F_CPU) ;
-
-			data->center_speed2 = (SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * center_timer_close_value) / F_CPU);
-			data->end_speed2 = (2 * SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * end_timer_close_value) / F_CPU);
+			center_time = begin_time - center_timer_open_value + center_timer_close_value;
+			end_time = begin_time - end_timer_open_value + end_timer_close_value;
 		}
+	}
+
+	if (update) {
+		data->time1 = (begin_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
+		data->time2 = (center_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
+		data->time3 = (end_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
+
+		data->center_speed1 = (SENSOR_DISTANCE * 1000000) / ((center_timer_open_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
+		data->end_speed1 = (SENSOR_DISTANCE * 1000000) / ((end_timer_open_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
+
+		data->center_speed2 = (SENSOR_DISTANCE * 1000000) / ((center_timer_close_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
+		data->end_speed2 = (SENSOR_DISTANCE * 1000000) / ((end_timer_close_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
 	}
 }
 

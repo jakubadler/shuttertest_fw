@@ -1,5 +1,5 @@
 MCU = atmega328p
-F_CPU = 8000000
+F_CPU = 8000000l
 FORMAT = ihex 
 TARGET = shuttertest
 
@@ -9,13 +9,13 @@ SRC = main.c measuring.c display.c stlcd.c glcd.c glcdfont.c
 OBJ = $(SRC:.c=.o)
 
 CFLAGS = -g -Os -mmcu=$(MCU) \
--funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffast-math\
+-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
 -Wall -Wstrict-prototypes \
 -DF_CPU=$(F_CPU)
 
 CFLAGS += -std=gnu99
 
-LDFLAGS = -Wl,-u,vfprintf -lprintf_flt
+LDFLAGS =
 
 OBJCOPY        = avr-objcopy
 OBJDUMP        = avr-objdump
