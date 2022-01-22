@@ -39,9 +39,12 @@ void get_measurements(struct display_data *data)
 	data->measuring = measuring;
 
 	if (!measuring) { // Only update data when measuring is done.
-		float begin_time = main_timer_value;
-		float center_time = main_timer_value - center_timer_open_value + center_timer_close_value;
-		float end_time = main_timer_value - end_timer_open_value + end_timer_close_value;
+
+		ATOMIC_BLOCK(ATOMIC_FORCEON) {
+			float begin_time = main_timer_value;
+			float center_time = main_timer_value - center_timer_open_value + center_timer_close_value;
+			float end_time = main_timer_value - end_timer_open_value + end_timer_close_value;
+		}
 
 		data->time1 = (1024.0f * begin_time) / F_CPU;
 		data->time2 = (1024.0f * center_time) / F_CPU;

@@ -41,9 +41,7 @@ int main(void)
 	setup();
 
 	while (1) {
-		ATOMIC_BLOCK(ATOMIC_FORCEON) {
-			get_measurements(&dd);
-		}
+		get_measurements(&dd);
 
 		SET_LED(dd.measuring);
 		display_update(&dd);
