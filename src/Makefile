@@ -9,7 +9,7 @@ SRC = main.c measuring.c display.c stlcd.c glcd.c glcdfont.c
 OBJ = $(SRC:.c=.o)
 
 CFLAGS = -g -Os -mmcu=$(MCU) \
--funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums \
+-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffast-math\
 -Wall -Wstrict-prototypes \
 -DF_CPU=$(F_CPU)
 

@@ -14,6 +14,8 @@
 #define SET_ACTIVE(x) (counter_active |= _BV(x))
 #define SET_INACTIVE(x) (counter_active &= ~_BV(x))
 
+#define SENSOR_DISTANCE 16 // [mm]
+
 enum counter
 {
 	MAIN,
@@ -50,10 +52,11 @@ void get_measurements(struct display_data *data)
 			data->time2 = (1024.0f * center_time) / F_CPU;
 			data->time3 = (1024.0f * end_time) / F_CPU;
 
-			data->center_open_delay = (1024.0f * center_timer_open_value) / F_CPU;
-			data->end_open_delay = (1024.0f * end_timer_open_value) / F_CPU;
-			data->center_close_delay = (1024.0f * center_timer_close_value) / F_CPU;
-			data->end_close_delay = (1024.0f * end_timer_close_value) / F_CPU;
+			data->center_speed1 = (SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * center_timer_open_value) / F_CPU);
+			data->end_speed1 = (2 * SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * end_timer_open_value) / F_CPU) ;
+
+			data->center_speed2 = (SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * center_timer_close_value) / F_CPU);
+			data->end_speed2 = (2 * SENSOR_DISTANCE * 1.0e-3f) / ((1024.0f * end_timer_close_value) / F_CPU);
 		}
 	}
 }

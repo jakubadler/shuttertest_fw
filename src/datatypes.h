@@ -5,13 +5,13 @@
 
 struct display_data
 {
-	float time1;
-	float time2;
-	float time3;
-	float center_open_delay;
-	float end_open_delay;
-	float center_close_delay;
-	float end_close_delay;
+	float time1; // [s]
+	float time2; // [s]
+	float time3; // [s]
+	float center_speed1; // [m/s]
+	float end_speed1; // [m/s]
+	float center_speed2; // [m/s]
+	float end_speed2; // [m/s]
 
 	bool measuring;
 	//bool error;
