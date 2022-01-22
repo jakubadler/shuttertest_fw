@@ -32,8 +32,18 @@ void display_update(const struct display_data *data)
 	snprintf(buf, sizeof(buf) - 1, "Time 3: %.5f s", data->time3);
 	drawstring(buffer, 0, 2, (uint8_t *) buf);
 
+	snprintf(buf, sizeof(buf) - 1, "O. delay 2: %.5f s", data->center_open_delay);
+	drawstring(buffer, 0, 3, (uint8_t *) buf);
+	snprintf(buf, sizeof(buf) - 1, "O. delay 3: %.5f s", data->end_open_delay);
+	drawstring(buffer, 0, 4, (uint8_t *) buf);
+
+	snprintf(buf, sizeof(buf) - 1, "C. delay 2: %.5f s", data->center_close_delay);
+	drawstring(buffer, 0, 5, (uint8_t *) buf);
+	snprintf(buf, sizeof(buf) - 1, "C. delay 3: %.5f s", data->end_close_delay);
+	drawstring(buffer, 0, 6, (uint8_t *) buf);
+
 	if (data->measuring) {
-		drawstring(buffer, 0, 4, (uint8_t *) "Measuring...");
+		drawstring(buffer, 0, 7, (uint8_t *) "Measuring...");
 	}
 
 	write_buffer(buffer);

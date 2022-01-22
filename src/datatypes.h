@@ -8,11 +8,13 @@ struct display_data
 	float time1;
 	float time2;
 	float time3;
-	float first_speed1;
-	float first_speed2;
+	float center_open_delay;
+	float end_open_delay;
+	float center_close_delay;
+	float end_close_delay;
 
 	bool measuring;
-	bool error;
+	//bool error;
 };
 
 #endif

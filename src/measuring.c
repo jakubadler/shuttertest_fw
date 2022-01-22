@@ -7,8 +7,8 @@
 
 #include <stdbool.h>
 
-#define IS_CLOSED(x) (PINC & _BV(x))
-#define IS_OPEN(x) (!IS_CLOSED(x))
+#define IS_OPEN(x) (!(PINC & _BV((x))))
+#define IS_CLOSED(x) (!(IS_OPEN((x))))
 #define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (PINC & _BV(x)))
 #define IS_ACTIVE(x) (counter_active & _BV(x))
 #define SET_ACTIVE(x) (counter_active |= _BV(x))
@@ -23,32 +23,38 @@ enum counter
 	END_CLOSE
 };
 
-static uint8_t sensor_state = 0;
-static uint8_t counter_active = 0;
+static volatile uint8_t sensor_state = 0;
+static volatile uint8_t counter_active = 0;
 
-static bool measuring = false;
+static volatile bool measuring = false;
 
-static uint32_t main_timer_value = 0;
-static uint32_t center_timer_open_value = 0;
-static uint32_t center_timer_close_value = 0;
-static uint32_t end_timer_open_value = 0;
-static uint32_t end_timer_close_value = 0;
+static volatile int32_t main_timer_value = 0;
+static volatile int32_t center_timer_open_value = 0;
+static volatile int32_t center_timer_close_value = 0;
+static volatile int32_t end_timer_open_value = 0;
+static volatile int32_t end_timer_close_value = 0;
 
 void get_measurements(struct display_data *data)
 {
-	data->measuring = measuring;
+	ATOMIC_BLOCK(ATOMIC_FORCEON) {
+		data->measuring = measuring;
 
-	if (!measuring) { // Only update data when measuring is done.
+		if (!measuring) { // Only update data when measuring is done.
+			float begin_time, center_time, end_time;
 
-		ATOMIC_BLOCK(ATOMIC_FORCEON) {
-			float begin_time = main_timer_value;
-			float center_time = main_timer_value - center_timer_open_value + center_timer_close_value;
-			float end_time = main_timer_value - end_timer_open_value + end_timer_close_value;
+			begin_time = main_timer_value;
+			center_time = begin_time - (float) center_timer_open_value + (float) center_timer_close_value;
+			end_time = begin_time - (float) end_timer_open_value + (float) end_timer_close_value;
+
+			data->time1 = (1024.0f * begin_time) / F_CPU;
+			data->time2 = (1024.0f * center_time) / F_CPU;
+			data->time3 = (1024.0f * end_time) / F_CPU;
+
+			data->center_open_delay = (1024.0f * center_timer_open_value) / F_CPU;
+			data->end_open_delay = (1024.0f * end_timer_open_value) / F_CPU;
+			data->center_close_delay = (1024.0f * center_timer_close_value) / F_CPU;
+			data->end_close_delay = (1024.0f * end_timer_close_value) / F_CPU;
 		}
-
-		data->time1 = (1024.0f * begin_time) / F_CPU;
-		data->time2 = (1024.0f * center_time) / F_CPU;
-		data->time3 = (1024.0f * end_time) / F_CPU;
 	}
 }
 
@@ -57,6 +63,9 @@ ISR(PCINT1_vect)
 	if (SENSOR_CHANGED(0) && IS_OPEN(0)) {
 		// Main sensor has just opened.
 		SET_ACTIVE(MAIN);
+
+		// Measuring started.
+		measuring = true;
 
 		// Reset main timer.
 		main_timer_value = 0;
@@ -67,13 +76,10 @@ ISR(PCINT1_vect)
 		TCNT0 = 0;
 		SET_ACTIVE(CENTER_OPEN);
 
-		// Reset center timer.
-		TCNT2 = 0;
+		// Reset end timer.
 		end_timer_open_value = 0;
+		TCNT2 = 0;
 		SET_ACTIVE(END_OPEN);
-
-		// Measuring started.
-		measuring = true;
 	}
 
 	if (SENSOR_CHANGED(0) && IS_CLOSED(0)) {
@@ -87,7 +93,7 @@ ISR(PCINT1_vect)
 		TCNT0 = 0;
 		SET_ACTIVE(CENTER_CLOSE);
 
-		// Reset center timer.
+		// Reset end timer.
 		TCNT2 = 0;
 		end_timer_close_value = 0;
 		SET_ACTIVE(END_CLOSE);
@@ -103,6 +109,7 @@ ISR(PCINT1_vect)
 		// Center sensor has just closed.
 		center_timer_close_value += TCNT0;
 		SET_INACTIVE(CENTER_CLOSE);
+		SET_INACTIVE(CENTER_OPEN); // Just in case.
 	}
 
 	if (SENSOR_CHANGED(2) && IS_OPEN(2)) {
@@ -115,6 +122,7 @@ ISR(PCINT1_vect)
 		// End sensor has just closed.
 		end_timer_close_value += TCNT2;
 		SET_INACTIVE(END_CLOSE);
+		SET_INACTIVE(END_OPEN); // Just in case.
 
 		// Measuring is done.
 		measuring = false;
@@ -161,6 +169,7 @@ ISR(TIMER2_OVF_vect)
 void measuring_init(void)
 {
 	DDRC = 0x00;
+	PORTC = 0x00;
 
 	sensor_state = PINC & 0x07;
 
@@ -170,20 +179,17 @@ void measuring_init(void)
 
 	// Initialize main timer.
 	TCCR1A = 0x00;
-	TCCR1B = 0x00;
-	TCCR1B = _BV(CS10) | _BV(CS12); // Set frequence divider to 1024.
+	TCCR1B = _BV(CS10) | _BV(CS12); // Set frequency divider to 1024.
 	TIMSK1 = _BV(TOIE2); // Interrupt on overflow.
 
 	// Initialize center timer.
 	TCCR0A = 0x00;
-	TCCR0B = 0x00;
-	TCCR0B = _BV(CS10) | _BV(CS12); // Set frequence divider to 1024.
+	TCCR0B = _BV(CS00) | _BV(CS02); // Set frequency divider to 1024.
 	TIMSK0 = _BV(TOIE2); // Interrupt on overflow.
 
 	// Initialize end timer.
 	TCCR2A = 0x00;
-	TCCR2B = 0x00;
-	TCCR2B = _BV(CS10) | _BV(CS12); // Set frequence divider to 1024.
+	TCCR2B = _BV(CS20) | _BV(CS21) | _BV(CS22); // Set frequency divider to 1024.
 	TIMSK2 = _BV(TOIE2); // Interrupt on overflow.
 
 	sei();

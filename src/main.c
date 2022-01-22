@@ -19,10 +19,6 @@
 
 struct display_data dd = {};
 
-volatile int state = 0;
-volatile bool measuring = false;
-volatile bool update = false;
-
 void setup(void)
 {
 	_delay_ms(500);
