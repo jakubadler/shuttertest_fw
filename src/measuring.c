@@ -37,6 +37,8 @@ static volatile int32_t center_timer_close_value = 0;
 static volatile int32_t end_timer_open_value = 0;
 static volatile int32_t end_timer_close_value = 0;
 
+#define TIME_COEF (COUNTER_FREQ_DIV / (F_CPU / 1000000))
+
 void get_measurements(struct display_data *data)
 {
 	int32_t begin_time, center_time, end_time;
@@ -55,15 +57,16 @@ void get_measurements(struct display_data *data)
 	}
 
 	if (update) {
-		data->time1 = (begin_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
-		data->time2 = (center_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
-		data->time3 = (end_time * COUNTER_FREQ_DIV) / (F_CPU / 1000000);
 
-		data->center_speed1 = (SENSOR_DISTANCE * 1000000) / ((center_timer_open_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
-		data->end_speed1 = (SENSOR_DISTANCE * 1000000) / ((end_timer_open_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
+		data->time1 = begin_time * TIME_COEF;
+		data->time2 = center_time * TIME_COEF;
+		data->time3 = end_time * TIME_COEF;
 
-		data->center_speed2 = (SENSOR_DISTANCE * 1000000) / ((center_timer_close_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
-		data->end_speed2 = (SENSOR_DISTANCE * 1000000) / ((end_timer_close_value * COUNTER_FREQ_DIV) / (F_CPU / 1000000));
+		data->center_speed1 = (SENSOR_DISTANCE * F_CPU) / (center_timer_open_value * COUNTER_FREQ_DIV);
+		data->end_speed1 = (SENSOR_DISTANCE * F_CPU) / (end_timer_open_value * COUNTER_FREQ_DIV);
+
+		data->center_speed2 = (SENSOR_DISTANCE * F_CPU) / (center_timer_close_value * COUNTER_FREQ_DIV);
+		data->end_speed2 = (SENSOR_DISTANCE * F_CPU) / (end_timer_close_value * COUNTER_FREQ_DIV);
 	}
 }
 
