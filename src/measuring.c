@@ -201,7 +201,7 @@ void measuring_init(void)
 
 	// Initialize end timer.
 	TCCR2A = 0x00;
-	TCCR2B = _BV(CS20) | _BV(CS21) | _BV(CS22); // Set frequency divider to 1024.
+	TCCR2B = _BV(CS20) | _BV(CS21) | _BV(CS22); // Set frequency divider to 1024. Yes, it's different from counters 0 and 1.
 	TIMSK2 = _BV(TOIE2); // Interrupt on overflow.
 
 	sei();
