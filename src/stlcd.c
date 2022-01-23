@@ -55,7 +55,7 @@ void st7565_command(uint8_t c) {
   spiwrite(c);
 }
 
-void st7565_init(void) {
+void st7565_init(bool reverse_color) {
   // set pin directions
   SID_DDR |= _BV(SID);
   SCLK_DDR |= _BV(SCLK);
@@ -77,6 +77,12 @@ void st7565_init(void) {
   st7565_command(CMD_SET_COM_NORMAL);
   // Initial display line
   st7565_command(CMD_SET_DISP_START_LINE);
+
+  if (reverse_color) {
+    st7565_command(CMD_SET_DISP_REVERSE);
+  } else {
+    st7565_command(CMD_SET_DISP_NORMAL);
+  }
 
   // turn on voltage converter (VC=1, VR=0, VF=0)
   st7565_command(CMD_SET_POWER_CONTROL | 0x4);

@@ -2,6 +2,7 @@
 #define ST_LCD__H__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define CMD_DISPLAY_OFF   0xAE
 #define CMD_DISPLAY_ON    0xAF
@@ -45,7 +46,7 @@
 extern int pagemap[];
 
 void spiwrite(uint8_t c);
-void st7565_init(void);
+void st7565_init(bool reverse_color);
 void st7565_command(uint8_t c);
 void st7565_set_brightness(uint8_t val);
 void clear_screen(void);

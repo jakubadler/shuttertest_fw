@@ -15,7 +15,7 @@ void display_init(void)
 	//BLA_DDR |= _BV(BLA);
 	//BLA_PORT |= _BV(BLA);
 
-	st7565_init();
+	st7565_init(true);
 	st7565_command(CMD_DISPLAY_ON);
 	st7565_command(CMD_SET_ALLPTS_NORMAL);
 	st7565_set_brightness(0x07);
