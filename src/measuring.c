@@ -62,11 +62,11 @@ void get_measurements(struct display_data *data)
 		data->time2 = center_time * TIME_COEF;
 		data->time3 = end_time * TIME_COEF;
 
-		data->center_speed1 = (SENSOR_DISTANCE * F_CPU) / (center_timer_open_value * COUNTER_FREQ_DIV);
-		data->end_speed1 = (SENSOR_DISTANCE * F_CPU) / (end_timer_open_value * COUNTER_FREQ_DIV);
+		data->center_speed1 = center_timer_open_value ? (SENSOR_DISTANCE * F_CPU) / (center_timer_open_value * COUNTER_FREQ_DIV) : 0;
+		data->end_speed1 = end_timer_open_value ? (SENSOR_DISTANCE * F_CPU) / (end_timer_open_value * COUNTER_FREQ_DIV) : 0;
 
-		data->center_speed2 = (SENSOR_DISTANCE * F_CPU) / (center_timer_close_value * COUNTER_FREQ_DIV);
-		data->end_speed2 = (SENSOR_DISTANCE * F_CPU) / (end_timer_close_value * COUNTER_FREQ_DIV);
+		data->center_speed2 = center_timer_close_value ? (SENSOR_DISTANCE * F_CPU) / (center_timer_close_value * COUNTER_FREQ_DIV) : 0;
+		data->end_speed2 = end_timer_close_value ? (SENSOR_DISTANCE * F_CPU) / (end_timer_close_value * COUNTER_FREQ_DIV) : 0;
 	}
 }
 

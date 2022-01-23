@@ -17,7 +17,7 @@
 #define LED_OFF() (LED_PORT &= ~_BV(LED))
 #define SET_LED(x) (!!(x) ? LED_ON() : LED_OFF())
 
-struct display_data dd = {};
+struct display_data dd;
 
 void setup(void)
 {
