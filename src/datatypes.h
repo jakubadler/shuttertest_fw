@@ -4,7 +4,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct display_data
+enum mode
+{
+	MODE_HORIZ = 0,
+	MODE_VERT,
+	MODE_SINGLE,
+	MODE_LAST
+};
+
+struct meas_data
 {
 	int32_t time1; // [us]
 	int32_t time2; // [us]
@@ -15,7 +23,6 @@ struct display_data
 	int32_t end_speed2; // [um/s]
 
 	bool measuring;
-	//bool error;
 };
 
 #endif

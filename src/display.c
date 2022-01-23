@@ -71,7 +71,7 @@ void print_number(char *buf, int32_t num)
 	buf[j] = '\0';
 }
 
-void display_update(const struct display_data *data)
+void display_update(const struct meas_data *data, uint8_t mode)
 {
 	char buf[24];
 	char numbuf[PRECISION + 4];
@@ -81,28 +81,46 @@ void display_update(const struct display_data *data)
 	print_number(numbuf, data->time1);
 	snprintf(buf, sizeof(buf) - 1, "Time 1: %ss", numbuf);
 	drawstring(buffer, 0, 0, (uint8_t *) buf);
-	print_number(numbuf, data->time2);
-	snprintf(buf, sizeof(buf) - 1, "Time 2: %ss", numbuf);
-	drawstring(buffer, 0, 1, (uint8_t *) buf);
-	print_number(numbuf, data->time3);
-	snprintf(buf, sizeof(buf) - 1, "Time 3: %ss", numbuf);
-	drawstring(buffer, 0, 2, (uint8_t *) buf);
 
-	print_number(numbuf, data->center_speed1);
-	snprintf(buf, sizeof(buf) - 1, "1st sp1: %sm/s", numbuf);
-	drawstring(buffer, 0, 3, (uint8_t *) buf);
+	if (mode != MODE_SINGLE) {
+		print_number(numbuf, data->time2);
+		snprintf(buf, sizeof(buf) - 1, "Time 2: %ss", numbuf);
+		drawstring(buffer, 0, 1, (uint8_t *) buf);
+		print_number(numbuf, data->time3);
+		snprintf(buf, sizeof(buf) - 1, "Time 3: %ss", numbuf);
+		drawstring(buffer, 0, 2, (uint8_t *) buf);
 
-	print_number(numbuf, data->end_speed1);
-	snprintf(buf, sizeof(buf) - 1, "1st sp2: %sm/s", numbuf);
-	drawstring(buffer, 0, 4, (uint8_t *) buf);
+		print_number(numbuf, data->center_speed1);
+		snprintf(buf, sizeof(buf) - 1, "1st sp1: %sm/s", numbuf);
+		drawstring(buffer, 0, 3, (uint8_t *) buf);
 
-	print_number(numbuf, data->center_speed2);
-	snprintf(buf, sizeof(buf) - 1, "2nd sp1: %sm/s", numbuf);
-	drawstring(buffer, 0, 5, (uint8_t *) buf);
+		print_number(numbuf, data->end_speed1);
+		snprintf(buf, sizeof(buf) - 1, "1st sp2: %sm/s", numbuf);
+		drawstring(buffer, 0, 4, (uint8_t *) buf);
 
-	print_number(numbuf, data->end_speed2);
-	snprintf(buf, sizeof(buf) - 1, "2nd sp2: %sm/s", numbuf);
-	drawstring(buffer, 0, 6, (uint8_t *) buf);
+		print_number(numbuf, data->center_speed2);
+		snprintf(buf, sizeof(buf) - 1, "2nd sp1: %sm/s", numbuf);
+		drawstring(buffer, 0, 5, (uint8_t *) buf);
+
+		print_number(numbuf, data->end_speed2);
+		snprintf(buf, sizeof(buf) - 1, "2nd sp2: %sm/s", numbuf);
+		drawstring(buffer, 0, 6, (uint8_t *) buf);
+	}
+
+	switch (mode)
+	{
+	case MODE_HORIZ:
+		drawstring(buffer, 0, 7, (uint8_t *) "HORIZONTAL");
+		break;
+	case MODE_VERT:
+		drawstring(buffer, 0, 7, (uint8_t *) "VERTICAL");
+		break;
+	case MODE_SINGLE:
+		drawstring(buffer, 0, 7, (uint8_t *) "SINGLE");
+		break;
+	default:
+		break;
+	}
 
 	if (data->measuring) {
 		drawstring(buffer, 0, 7, (uint8_t *) "Measuring...");

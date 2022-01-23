@@ -40,7 +40,7 @@ static volatile int32_t end_timer_close_value = 0;
 
 #define TIME_COEF (COUNTER_FREQ_DIV / (F_CPU / 1000000))
 
-void get_measurements(struct display_data *data)
+void get_measurements(struct meas_data *data)
 {
 	int32_t begin_time, center_time, end_time;
 	bool update = false;
@@ -182,7 +182,7 @@ ISR(TIMER2_OVF_vect)
 void measuring_init(void)
 {
 	DDRC = 0x00;
-	PORTC = 0x00;
+	PORTC = 0x00; // Disable internal pull-up resistor.
 
 	sensor_state = PINC & 0x07;
 

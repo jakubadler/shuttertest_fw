@@ -4,6 +4,6 @@
 #include "datatypes.h"
 
 void display_init(void);
-void display_update(const struct display_data *data);
+void display_update(const struct meas_data *data, uint8_t mode);
 
 #endif
