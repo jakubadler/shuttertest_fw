@@ -15,7 +15,8 @@
 #define SET_INACTIVE(x) (counter_active &= ~_BV(x))
 
 #define SENSOR_DISTANCE 16 // [mm]
-#define COUNTER_FREQ_DIV 1024
+//#define COUNTER_FREQ_DIV 1024
+#define COUNTER_FREQ_DIV 256
 
 enum counter
 {
@@ -191,17 +192,20 @@ void measuring_init(void)
 
 	// Initialize main timer.
 	TCCR1A = 0x00;
-	TCCR1B = _BV(CS10) | _BV(CS12); // Set frequency divider to 1024.
+	//TCCR1B = _BV(CS10) | _BV(CS12); // Set frequency divider to 1024.
+	TCCR1B = _BV(CS12); // Set frequency divider to 256.
 	TIMSK1 = _BV(TOIE2); // Interrupt on overflow.
 
 	// Initialize center timer.
 	TCCR0A = 0x00;
-	TCCR0B = _BV(CS00) | _BV(CS02); // Set frequency divider to 1024.
+	//TCCR0B = _BV(CS00) | _BV(CS02); // Set frequency divider to 1024.
+	TCCR0B = _BV(CS02); // Set frequency divider to 256.
 	TIMSK0 = _BV(TOIE2); // Interrupt on overflow.
 
 	// Initialize end timer.
 	TCCR2A = 0x00;
-	TCCR2B = _BV(CS20) | _BV(CS21) | _BV(CS22); // Set frequency divider to 1024. Yes, it's different from counters 0 and 1.
+	//TCCR2B = _BV(CS20) | _BV(CS21) | _BV(CS22); // Set frequency divider to 1024. Yes, it's different from counters 0 and 1.
+	TCCR2B = _BV(CS21) | _BV(CS22); // Set frequency divider to 256. Yes, it's different from counters 0 and 1.
 	TIMSK2 = _BV(TOIE2); // Interrupt on overflow.
 
 	sei();
