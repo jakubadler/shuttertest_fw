@@ -29,7 +29,11 @@ void print_number(char *buf, int32_t num)
 	uint8_t i = 0, j = 0, k = 0, shift = 0;
 	char digits[PRECISION];
 
-	memset(digits, ' ', sizeof(digits));
+	if (num < 0) {
+		num = -num;
+		buf[0] = '-';
+		k++;
+	}
 
 	while (1) {
 		d = num / 10;
@@ -43,8 +47,8 @@ void print_number(char *buf, int32_t num)
 		if (num == 0 && i != 0) break;
 	}
 
-	for (j = 0, k = 0; j < PRECISION && i > 0; j++) {
-		if (k == 0 && j > 0 && i % 3 == 0) {
+	for (j = 0; j < PRECISION && i > 0; j++) {
+		if (j > 0 && i % 3 == 0) {
 			shift = i;
 			buf[j+k] = '.';
 			k++;
