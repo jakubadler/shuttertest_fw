@@ -124,7 +124,11 @@ void display_update(const struct meas_data *data, uint8_t mode)
 
 	if (data->measuring) {
 		drawstring(buffer, 0, 7, (uint8_t *) "Measuring...");
+	} else if ((data->status & 0x3f) != 0x3f) {
+		snprintf(buf, sizeof(buf) - 1, "INVALID: 0x%x", data->status);
+		drawstring(buffer, 0, 7, (uint8_t *) buf);
 	}
+
 
 	write_buffer(buffer);
 }
