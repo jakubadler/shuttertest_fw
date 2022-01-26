@@ -116,7 +116,7 @@ ISR(PCINT1_vect)
 		measuring = false;
 	}
 
-	sensor_state = PINC & 0x07;
+	sensor_state = PINC & 0x3f;
 }
 
 ISR(TIMER1_OVF_vect)
@@ -131,11 +131,11 @@ void measuring_init(void)
 	DDRC = 0x00;
 	PORTC = 0x00; // Disable internal pull-up resistor.
 
-	sensor_state = PINC & 0x07;
+	sensor_state = PINC & 0x3f;
 
 	// Configure interrupts.
 	PCICR |= _BV(PCIE1);
-	PCMSK1 = _BV(PCINT8) | _BV(PCINT9) | _BV(PCINT10);
+	PCMSK1 = _BV(PCINT8) | _BV(PCINT9) | _BV(PCINT10) | _BV(PCINT11) | _BV(PCINT12) | _BV(PCINT13);
 
 	// Initialize main timer.
 	TCCR1A = 0x00;
@@ -162,9 +162,9 @@ void measuring_init_mode(uint8_t mode)
 		sensor_end = 4;
 		break;
 	case MODE_SINGLE:
-		sensor_begin = 0;
+		sensor_begin = 5;
 		sensor_center = 1;
-		sensor_end = 0;
+		sensor_end = 5;
 		break;
 	}
 }
