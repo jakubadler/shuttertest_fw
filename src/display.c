@@ -25,7 +25,8 @@ void display_init(void)
 
 void print_number(char *buf, int32_t num)
 {
-	int32_t d, r;
+	int32_t d;
+	int8_t r;
 	uint8_t i = 0, j = 0, k = 0, shift = 0;
 	char digits[PRECISION];
 
@@ -35,7 +36,7 @@ void print_number(char *buf, int32_t num)
 		k++;
 	}
 
-	while (1) {
+	do {
 		d = num / 10;
 		r = num % 10;
 
@@ -43,9 +44,7 @@ void print_number(char *buf, int32_t num)
 
 		i++;
 		num = d;
-
-		if (num == 0 && i != 0) break;
-	}
+	} while (num != 0 || i == 0);
 
 	for (j = 0; j < PRECISION && i > 0; j++) {
 		if (j > 0 && i % 3 == 0) {
