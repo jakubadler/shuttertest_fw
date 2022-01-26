@@ -13,7 +13,8 @@
 
 #define SENSOR_DISTANCE 16 // [mm]
 //#define COUNTER_FREQ_DIV 1024
-#define COUNTER_FREQ_DIV 256
+//#define COUNTER_FREQ_DIV 256
+#define COUNTER_FREQ_DIV 8
 
 static volatile uint8_t sensor_begin = 0;
 static volatile uint8_t sensor_center = 0;
@@ -139,7 +140,8 @@ void measuring_init(void)
 	// Initialize main timer.
 	TCCR1A = 0x00;
 	//TCCR1B = _BV(CS10) | _BV(CS12); // Set frequency divider to 1024.
-	TCCR1B = _BV(CS12); // Set frequency divider to 256.
+	//TCCR1B = _BV(CS12); // Set frequency divider to 256.
+	TCCR1B = _BV(CS11); // Set frequency divider to 8.
 	TIMSK1 = _BV(TOIE2); // Interrupt on overflow.
 
 	sei();
