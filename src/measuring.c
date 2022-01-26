@@ -15,8 +15,11 @@
 //#define COUNTER_FREQ_DIV 1024
 #define COUNTER_FREQ_DIV 256
 
-static volatile uint8_t sensor_state = 0;
+static volatile uint8_t sensor_begin = 0;
+static volatile uint8_t sensor_center = 0;
+static volatile uint8_t sensor_end = 0;
 
+static volatile uint8_t sensor_state = 0;
 static volatile bool measuring = false;
 
 static volatile int32_t timer_value = 0;
@@ -55,7 +58,7 @@ ISR(PCINT1_vect)
 	timer_value &= 0xffff0000;
 	timer_value |= TCNT1;
 
-	if (SENSOR_CHANGED(0) && IS_OPEN(0)) {
+	if (SENSOR_CHANGED(sensor_begin) && IS_OPEN(sensor_begin)) {
 		// Main sensor has just opened.
 
 		// Measuring started.
@@ -74,35 +77,35 @@ ISR(PCINT1_vect)
 		status = BEGIN_OPEN;
 	}
 
-	if (SENSOR_CHANGED(0) && IS_CLOSED(0) && measuring) {
+	if (SENSOR_CHANGED(sensor_begin) && IS_CLOSED(sensor_begin) && measuring) {
 		// Main sensor has just closed.
 		begin_close_time = timer_value;
 
 		status |= BEGIN_CLOSE;
 	}
 
-	if (SENSOR_CHANGED(1) && IS_OPEN(1) && measuring) {
+	if (SENSOR_CHANGED(sensor_center) && IS_OPEN(sensor_center) && measuring) {
 		// Center sensor has just opened.
 		center_open_time = timer_value;
 
 		status |= CENTER_OPEN;
 	}
 
-	if (SENSOR_CHANGED(1) && IS_CLOSED(1) && measuring) {
+	if (SENSOR_CHANGED(sensor_center) && IS_CLOSED(sensor_center) && measuring) {
 		// Center sensor has just closed.
 		center_close_time = timer_value;
 
 		status |= CENTER_CLOSE;
 	}
 
-	if (SENSOR_CHANGED(2) && IS_OPEN(2) && measuring) {
+	if (SENSOR_CHANGED(sensor_end) && IS_OPEN(sensor_end) && measuring) {
 		// End sensor has just opened.
 		end_open_time = timer_value;
 
 		status |= END_OPEN;
 	}
 
-	if (SENSOR_CHANGED(2) && IS_CLOSED(2) && measuring) {
+	if (SENSOR_CHANGED(sensor_end) && IS_CLOSED(sensor_end) && measuring) {
 		// End sensor has just closed.
 		end_close_time = timer_value;
 
@@ -140,5 +143,27 @@ void measuring_init(void)
 	TIMSK1 = _BV(TOIE2); // Interrupt on overflow.
 
 	sei();
+}
+
+void measuring_init_mode(uint8_t mode)
+{
+	switch (mode) {
+	default:
+	case MODE_HORIZ:
+		sensor_begin = 0;
+		sensor_center = 1;
+		sensor_end = 2;
+		break;
+	case MODE_VERT:
+		sensor_begin = 3;
+		sensor_center = 1;
+		sensor_end = 4;
+		break;
+	case MODE_SINGLE:
+		sensor_begin = 0;
+		sensor_center = 1;
+		sensor_end = 0;
+		break;
+	}
 }
 

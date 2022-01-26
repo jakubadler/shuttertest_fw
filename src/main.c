@@ -46,6 +46,7 @@ int main(void)
 		if (swstate && !swstate_new) {
 			mode++;
 			mode %= MODE_LAST;
+			measuring_init_mode(mode);
 		}
 		swstate = swstate_new;
 
