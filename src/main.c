@@ -31,6 +31,7 @@ void setup(void)
 {
 	display_init();
 	measuring_init();
+	measuring_init_mode(mode);
 
 	LED_DDR |= _BV(LED);
 	SWITCH_DDR &= ~_BV(SWITCH);
