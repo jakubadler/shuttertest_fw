@@ -29,6 +29,7 @@ static struct meas_data mdata;
 
 void setup(void)
 {
+
 	display_init();
 	measuring_init();
 	measuring_init_mode(mode);
@@ -36,6 +37,10 @@ void setup(void)
 	LED_DDR |= _BV(LED);
 	SWITCH_DDR &= ~_BV(SWITCH);
 	SWITCH_PORT |= _BV(SWITCH); // Enable internal pull-up resistor.
+
+	_delay_ms(10);
+
+	swstate = !(SWITCH_PIN & _BV(SWITCH));
 }
 
 int main(void)
