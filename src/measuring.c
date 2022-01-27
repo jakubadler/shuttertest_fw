@@ -7,8 +7,8 @@
 
 #include <stdbool.h>
 
-#define IS_OPEN(x) (!(PINC & _BV((x))))
-#define IS_CLOSED(x) (!(IS_OPEN((x))))
+#define IS_CLOSED(x) (!(PINC & _BV((x))))
+#define IS_OPEN(x) (!(IS_CLOSED((x))))
 #define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (PINC & _BV(x)))
 
 #define SENSOR_DISTANCE 16 // [mm]
