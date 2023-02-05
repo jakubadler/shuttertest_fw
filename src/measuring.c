@@ -7,9 +7,12 @@
 
 #include <stdbool.h>
 
-#define IS_CLOSED(x) (!(PINC & _BV((x))))
+#include "io.h"
+
+#define IS_CLOSED(x) (!(SENSOR_PIN & _BV((x))))
 #define IS_OPEN(x) (!(IS_CLOSED((x))))
-#define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (PINC & _BV(x)))
+
+#define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (SENSOR_PIN & _BV(x)))
 
 #define SENSOR_DISTANCE 16 // [mm]
 //#define COUNTER_FREQ_DIV 1024
@@ -54,7 +57,7 @@ void get_measurements(struct meas_data *data)
 	}
 }
 
-ISR(PCINT1_vect)
+ISR(PCINT0_vect)
 {
 	timer_value &= 0xffff0000;
 	timer_value |= TCNT1;
@@ -116,7 +119,7 @@ ISR(PCINT1_vect)
 		measuring = false;
 	}
 
-	sensor_state = PINC & 0x3f;
+	sensor_state = SENSOR_PIN & 0x3f;
 }
 
 ISR(TIMER1_OVF_vect)
@@ -128,14 +131,14 @@ ISR(TIMER1_OVF_vect)
 
 void measuring_init(void)
 {
-	DDRC = 0x00;
-	PORTC = 0x00; // Disable internal pull-up resistor.
+	SENSOR_DDR = 0x00;
+	SENSOR_PORT = 0x00; // Disable internal pull-up resistor.
 
-	sensor_state = PINC & 0x3f;
+	sensor_state = SENSOR_PIN & 0x3f;
 
 	// Configure interrupts.
-	PCICR |= _BV(PCIE1);
-	PCMSK1 = _BV(PCINT8) | _BV(PCINT9) | _BV(PCINT10) | _BV(PCINT11) | _BV(PCINT12) | _BV(PCINT13);
+	PCICR |= _BV(PCIE0);
+	PCMSK0 = _BV(PCINT0) | _BV(PCINT1) | _BV(PCINT2) | _BV(PCINT3) | _BV(PCINT4) | _BV(PCINT5);
 
 	// Initialize main timer.
 	TCCR1A = 0x00;
