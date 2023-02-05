@@ -11,11 +11,6 @@
 
 #include "io.h"
 
-#define SWITCH_DDR DDRD
-#define SWITCH_PORT PORTD
-#define SWITCH_PIN PIND
-#define SWITCH 0
-
 #define LED_ON() (LED_PORT |= _BV(LED))
 #define LED_OFF() (LED_PORT &= ~_BV(LED))
 #define SET_LED(x) (!!(x) ? LED_ON() : LED_OFF())

@@ -1,14 +1,20 @@
 #ifndef SHUTTER_TEST__IO__H__
 #define SHUTTER_TEST__IO__H__
 
+/**
+ * PORT D
+ * LED, switch, LCD
+ */
 #define LED_DDR DDRD
 #define LED_PORT PORTD
 #define LED 0
 
+#define SWITCH_DDR DDRD
+#define SWITCH_PORT PORTD
+#define SWITCH_PIN PIND
+#define SWITCH 0
 
-/**
- * LCD
- */
+// LCD pins
 #define SID_DDR DDRD
 #define SID_PIN PIND
 #define SID_PORT PORTD
