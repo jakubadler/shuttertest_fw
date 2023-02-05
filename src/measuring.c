@@ -7,6 +7,8 @@
 
 #include <stdbool.h>
 
+#include "io.h"
+
 #define IS_CLOSED(x) (!(PINC & _BV((x))))
 #define IS_OPEN(x) (!(IS_CLOSED((x))))
 #define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (PINC & _BV(x)))
@@ -51,7 +53,7 @@ void get_measurements(struct display_data *data)
 	}
 }
 
-ISR(PCINT1_vect)
+ISR(PCINT0_vect)
 {
 	timer_value &= 0xffff0000;
 	timer_value |= TCNT1;
@@ -125,14 +127,14 @@ ISR(TIMER1_OVF_vect)
 
 void measuring_init(void)
 {
-	DDRC = 0x00;
-	PORTC = 0x00;
+	SENSOR_DDR = 0x00;
+	SENSOR_PORT = 0x00;
 
-	sensor_state = PINC & 0x07;
+	sensor_state = SENSOR_PIN & 0x07;
 
 	// Configure interrupts.
-	PCICR |= _BV(PCIE1);
-	PCMSK1 = _BV(PCINT8) | _BV(PCINT9) | _BV(PCINT10);
+	PCICR |= _BV(PCIE0);
+	PCMSK0 = _BV(PCINT0) | _BV(PCINT1) | _BV(PCINT2);
 
 	// Initialize main timer.
 	TCCR1A = 0x00;

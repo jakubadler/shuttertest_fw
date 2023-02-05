@@ -1,14 +1,23 @@
 #ifndef SHUTTER_TEST__IO__H__
 #define SHUTTER_TEST__IO__H__
 
+/**
+ * PORT B
+ * Sensor inputs
+ */
+#define SENSOR_DDR DDRB
+#define SENSOR_PORT PORTB
+#define SENSOR_PIN PINB
+
+/**
+ * PORT D
+ * LED, switch, LCD
+ */
 #define LED_DDR DDRD
 #define LED_PORT PORTD
 #define LED 0
 
-
-/**
- * LCD
- */
+// LCD pins
 #define SID_DDR DDRD
 #define SID_PIN PIND
 #define SID_PORT PORTD
@@ -22,7 +31,7 @@
 #define CS_DDR DDRD
 #define CS_PIN PIND
 #define CS_PORT PORTD
-#define CS 5
+#define CS 7
 
 #define RST_DDR DDRD
 #define RST_PIN PIND
@@ -32,7 +41,7 @@
 #define A0_DDR DDRD
 #define A0_PIN PIND
 #define A0_PORT PORTD
-#define A0 7
+#define A0 5
 
 
 #endif
