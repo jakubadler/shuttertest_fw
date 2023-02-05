@@ -9,9 +9,10 @@
 
 #include "io.h"
 
-#define IS_CLOSED(x) (!(PINC & _BV((x))))
+#define IS_CLOSED(x) (!(SENSOR_PIN & _BV((x))))
 #define IS_OPEN(x) (!(IS_CLOSED((x))))
-#define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (PINC & _BV(x)))
+
+#define SENSOR_CHANGED(x) ((sensor_state & _BV(x)) ^ (SENSOR_PIN & _BV(x)))
 
 #define SENSOR_DISTANCE 16 // [mm]
 //#define COUNTER_FREQ_DIV 1024
@@ -115,7 +116,7 @@ ISR(PCINT0_vect)
 		measuring = false;
 	}
 
-	sensor_state = PINC & 0x07;
+	sensor_state = SENSOR_PIN & 0x07;
 }
 
 ISR(TIMER1_OVF_vect)
