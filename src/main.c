@@ -9,9 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define LED_DDR DDRB
-#define LED_PORT PORTB
-#define LED 2
+#include "io.h"
 
 #define SWITCH_DDR DDRD
 #define SWITCH_PORT PORTD
