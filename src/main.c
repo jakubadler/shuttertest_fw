@@ -9,9 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define LED_DDR DDRD
-#define LED_PORT PORTD
-#define LED 2
+#include "io.h"
 
 #define LED_ON() (LED_PORT |= _BV(LED))
 #define LED_OFF() (LED_PORT &= ~_BV(LED))

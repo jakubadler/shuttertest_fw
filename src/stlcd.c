@@ -2,37 +2,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-
-
-#define BLA_DDR DDRB
-#define BLA_PIN PINB
-#define BLA_PORT PORTB
-#define BLA 2
-
-#define SID_DDR DDRB
-#define SID_PIN PINB
-#define SID_PORT PORTB
-#define SID 1
-
-#define SCLK_DDR DDRB
-#define SCLK_PIN PINB
-#define SCLK_PORT PORTB
-#define SCLK 0
-
-#define A0_DDR DDRD
-#define A0_PIN PIND
-#define A0_PORT PORTD
-#define A0 7
-
-#define RST_DDR DDRD
-#define RST_PIN PIND
-#define RST_PORT PORTD
-#define RST 6
-
-#define CS_DDR DDRD
-#define CS_PIN PIND
-#define CS_PORT PORTD
-#define CS 5
+#include "io.h"
 
 int pagemap[] = { 7, 6, 5, 4, 3, 2, 1, 0 };
 
