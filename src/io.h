@@ -2,8 +2,6 @@
 #define SHUTTER_TEST__IO__H__
 
 /**
-<<<<<<< HEAD
-=======
  * PORT B
  * Sensor inputs
  */
@@ -12,7 +10,6 @@
 #define SENSOR_PIN PINB
 
 /**
->>>>>>> master
  * PORT D
  * LED, switch, LCD
  */
