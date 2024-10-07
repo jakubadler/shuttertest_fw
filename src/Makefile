@@ -5,6 +5,7 @@ TARGET = shuttertest
 
 CC = avr-gcc
 
+HEADER = measuring.h display.h stlcd.h glcd.h
 SRC = main.c measuring.c display.c stlcd.c glcd.c glcdfont.c
 OBJ = $(SRC:.c=.o)
 
@@ -21,6 +22,14 @@ OBJCOPY        = avr-objcopy
 OBJDUMP        = avr-objdump
 
 all: hex
+
+depend: .depend
+
+.depend: ${SRC} ${HEADER}
+	rm -rf "$@"
+	${CC} ${CFLAGS} -MM $^ > "$@"
+
+include .depend
 
 $(TARGET).elf: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
