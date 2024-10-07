@@ -22,8 +22,12 @@ static struct meas_data mdata;
 
 void setup(void)
 {
-
+	ENABLE_DDR = 0xff; // output
+	ENABLE_PORT = 0x00;
+	
 	display_init();
+
+	ENABLE_PORT &= ~_BV(ENABLE_BACKLIGHT);
 	measuring_init();
 	measuring_init_mode(mode);
 
