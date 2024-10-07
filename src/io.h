@@ -17,6 +17,11 @@
 #define LED_PORT PORTD
 #define LED 0
 
+#define SWITCH_DDR DDRD
+#define SWITCH_PORT PORTD
+#define SWITCH_PIN PIND
+#define SWITCH 2
+
 // LCD pins
 #define SID_DDR DDRD
 #define SID_PIN PIND

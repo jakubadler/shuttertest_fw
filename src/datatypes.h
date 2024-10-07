@@ -4,6 +4,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+enum mode
+{
+	MODE_HORIZ = 0,
+	MODE_VERT,
+	MODE_SINGLE,
+	MODE_LAST
+};
+
 #define BEGIN_OPEN   (1 << 0)
 #define BEGIN_CLOSE  (1 << 1)
 #define CENTER_OPEN  (1 << 2)
@@ -11,7 +19,7 @@
 #define END_OPEN     (1 << 4)
 #define END_CLOSE    (1 << 5)
 
-struct display_data
+struct meas_data
 {
 	int32_t time1; // [us]
 	int32_t time2; // [us]
@@ -23,7 +31,6 @@ struct display_data
 
 	uint8_t status;
 	bool measuring;
-	//bool error;
 };
 
 #endif

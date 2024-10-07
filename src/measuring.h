@@ -6,7 +6,8 @@
 #include <stdbool.h>
 
 void measuring_init(void);
-void get_measurements(struct display_data *data);
+void measuring_init_mode(uint8_t mode);
+void get_measurements(struct meas_data *data);
 
 #endif
 
