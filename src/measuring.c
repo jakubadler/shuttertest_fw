@@ -131,7 +131,7 @@ ISR(TIMER1_OVF_vect)
 
 void measuring_init(void)
 {
-	SENSOR_DDR = 0x00;
+	SENSOR_DDR = 0x00; // input
 	SENSOR_PORT = 0x00; // Disable internal pull-up resistor.
 
 	sensor_state = SENSOR_PIN & 0x3f;
@@ -155,18 +155,30 @@ void measuring_init_mode(uint8_t mode)
 	switch (mode) {
 	default:
 	case MODE_HORIZ:
+		ENABLE_PORT |= _BV(ENABLE_CENTER);
+		ENABLE_PORT |= _BV(ENABLE_HORIZ);
+		ENABLE_PORT &= ~_BV(ENABLE_VERT);
+		ENABLE_PORT &= ~_BV(ENABLE_SINGLE);
 		sensor_begin = 0;
 		sensor_center = 1;
 		sensor_end = 2;
 		break;
 	case MODE_VERT:
+		ENABLE_PORT |= _BV(ENABLE_CENTER);
+		ENABLE_PORT &= ~_BV(ENABLE_HORIZ);
+		ENABLE_PORT |= _BV(ENABLE_VERT);
+		ENABLE_PORT &= ~_BV(ENABLE_SINGLE);
 		sensor_begin = 3;
 		sensor_center = 1;
 		sensor_end = 4;
 		break;
 	case MODE_SINGLE:
+		ENABLE_PORT &= ~_BV(ENABLE_CENTER);
+		ENABLE_PORT &= ~_BV(ENABLE_HORIZ);
+		ENABLE_PORT &= ~_BV(ENABLE_VERT);
+		ENABLE_PORT |= _BV(ENABLE_SINGLE);
 		sensor_begin = 5;
-		sensor_center = 1;
+		sensor_center = 1; // Doesn't matter
 		sensor_end = 5;
 		break;
 	}
