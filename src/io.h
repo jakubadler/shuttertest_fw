@@ -10,6 +10,19 @@
 #define SENSOR_PIN PINB
 
 /**
+ * PORT C
+ * Enable outputs
+ */
+#define ENABLE_DDR DDRC
+#define ENABLE_PORT PORTC
+#define ENABLE_PIN PINC
+#define ENABLE_BACKLIGHT 2
+#define ENABLE_CENTER 3
+#define ENABLE_HORIZ 4
+#define ENABLE_VERT 5
+#define ENABLE_SINGLE 6
+
+/**
  * PORT D
  * LED, switch, LCD
  */
@@ -36,7 +49,7 @@
 #define CS_DDR DDRD
 #define CS_PIN PIND
 #define CS_PORT PORTD
-#define CS 7
+#define CS 5
 
 #define RST_DDR DDRD
 #define RST_PIN PIND
@@ -46,7 +59,7 @@
 #define A0_DDR DDRD
 #define A0_PIN PIND
 #define A0_PORT PORTD
-#define A0 5
+#define A0 7
 
 
 #endif
