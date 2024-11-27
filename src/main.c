@@ -2,7 +2,9 @@
 #include "measuring.h"
 
 #include <avr/io.h>
+#include <avr/sleep.h>
 #include <avr/interrupt.h>
+#include <avr/power.h>
 #include <util/atomic.h>
 #include <util/delay.h>
 
@@ -22,12 +24,23 @@ static struct meas_data mdata;
 
 void setup(void)
 {
+	// Enable INT0, that's the switch button.
+	EICRA = 0x01;
+	EIMSK |= _BV(INT0);
+
+	// Turn off unused stuff.
+	ADCSRA = 0;
+	power_all_disable();
+	power_timer1_enable();
+	MCUCR = _BV(BODS) | _BV(BODSE);
+	MCUCR = _BV(BODS);
+
 	ENABLE_DDR = 0xff; // output
 	ENABLE_PORT = 0x00;
 	
 	display_init();
 
-	ENABLE_PORT &= ~_BV(ENABLE_BACKLIGHT);
+	ENABLE_PORT |= _BV(ENABLE_BACKLIGHT);
 	measuring_init();
 	measuring_init_mode(mode);
 
@@ -38,6 +51,11 @@ void setup(void)
 	_delay_ms(10);
 
 	swstate = !(SWITCH_PIN & _BV(SWITCH));
+}
+
+ISR(INT0_vect)
+{
+	sleep_disable();
 }
 
 int main(void)
@@ -58,7 +76,8 @@ int main(void)
 		SET_LED(mdata.measuring || swstate);
 
 		display_update(&mdata, mode);
-
+		set_sleep_mode(SLEEP_MODE_IDLE);
+		sleep_mode();
 	}
 
 	return 0;
